@@ -21,7 +21,7 @@
 ### install
 
 ```shell
-go install github.com/markthree/clean-cache
+go install github.com/markthree/clean-cache@latest
 ```
 
 ### clean
