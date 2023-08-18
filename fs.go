@@ -18,20 +18,25 @@ func RemoveAll(f string) error {
 
 	entrysLen := len(entrys)
 
-	chs := make(chan interface{}, entrysLen)
+	chs := make(chan struct{}, entrysLen)
 	errChan := make(chan error)
 
 	for _, entry := range entrys {
 		go func(entry os.DirEntry) {
 			p := path.Join(f, entry.Name())
 			if entry.IsDir() {
-				nestedErr := RemoveAll(p)
-				if nestedErr != nil {
-					errChan <- nestedErr
+				err := RemoveAll(p)
+				if err != nil {
+					errChan <- err
 				}
 				return
 			}
-			os.Remove(p)
+			err := os.Remove(p)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			chs <- struct{}{}
 		}(entry)
 	}
 
