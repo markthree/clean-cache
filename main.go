@@ -37,5 +37,4 @@ func main() {
 			color.Green("remove success: %v", v)
 		}
 	}
-
 }
