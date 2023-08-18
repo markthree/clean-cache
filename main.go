@@ -16,13 +16,21 @@ func isHelp() bool {
 	return false
 }
 
-func withNodeModules(dirs []string) []string {
+func withNodeModules(dirs *[]string) {
 	for _, v := range os.Args {
 		if v == "-n" || v == "--node_modules" {
-			return append(dirs, "node_modules")
+			*dirs = append(*dirs, "node_modules")
 		}
 	}
-	return dirs
+}
+
+func withDist(dirs *[]string) {
+	for _, v := range os.Args {
+		if v == "-d" || v == "--dist" {
+			*dirs = append(*dirs, "dist", ".output")
+			return
+		}
+	}
 }
 
 func main() {
@@ -30,13 +38,16 @@ func main() {
 		fmt.Print("\n")
 		color.Cyan("clean-cache\n\n")
 		fmt.Print("Description: go 写的清理 node 项目缓存，超级无敌快\n\n")
-		fmt.Print("Usage: -n --node_modules 则会删除 node_modules\n\n")
+		fmt.Print("Usage: -d --dist 则会删除 dist 和 .output\n\n")
+		fmt.Print("       -n --node_modules 则会删除 node_modules\n\n")
 		os.Exit(0)
 	}
 
-	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp", "dist", ".output"}
+	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
 
-	cache_dirs = withNodeModules(cache_dirs)
+	withDist(&cache_dirs)
+
+	withNodeModules(&cache_dirs)
 
 	for _, v := range cache_dirs {
 		if !IsExist(v) || !IsDir(v) {
