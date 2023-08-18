@@ -24,7 +24,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
+	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp", "dist", ".output"}
 
 	for _, v := range cache_dirs {
 		if !IsExist(v) || !IsDir(v) {
