@@ -4,6 +4,22 @@
 
 <br />
 
+## Usage
+
+### install
+
+```shell
+go install github.com/markthree/clean-cache
+```
+
+### clean
+
+```shell
+clean-cache
+```
+
+<br />
+
 ## License
 
 Made with [markthree](https://github.com/markthee)
