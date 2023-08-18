@@ -1,12 +1,12 @@
 # clean-cache
 
-用 `go` 写的清理 `node` 项目缓存工具，速度很快
+Clean up `node` project cache tool written in `go`, very fast
 
 <br />
 
 ## README 🦉
 
-简体中文 | [English](./README_EN.md)
+[简体中文](./README.md) | English
 
 <br />
 
@@ -20,26 +20,26 @@ go install github.com/markthree/clean-cache
 
 ### clean
 
-默认清理当前目录下的
-`.nuxt`，`cache`，`.cache`，`@cache`，`temp`，`.temp`，`@temp` 目录
+By default, clean up the current directory `.nuxt`, `cache`, `.cache`, `@cache`,
+`temp`, `.temp`, `@temp` directories
 
 ```shell
 clean-cache
 ```
 
-#### 同时移除 dist 和 .output
+#### with dist and .output
 
 ```shell
 clean-cache -d
 ```
 
-#### 同时移除 node_modules
+#### with node_modules
 
 ```shell
 clean-cache -n
 ```
 
-#### 查看帮助
+#### help
 
 ```shell
 clean-cache -h
