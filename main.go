@@ -27,7 +27,7 @@ func main() {
 	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
 
 	for _, v := range cache_dirs {
-		if !IsDir(v) {
+		if !IsExist(v) || !IsDir(v) {
 			continue
 		}
 		err := RemoveAll(v)
