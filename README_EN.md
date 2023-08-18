@@ -10,6 +10,12 @@ Clean up `node` project cache tool written in `go`, very fast
 
 <br />
 
+## motivation
+
+Want to quickly clean up the `node` project cache
+
+<br />
+
 ## Usage
 
 ### install
