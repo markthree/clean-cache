@@ -18,6 +18,18 @@ go install github.com/markthree/clean-cache
 clean-cache
 ```
 
+#### 移除 dist 和 .output
+
+```shell
+clean-cache -d
+```
+
+#### 移除 node_modules
+
+```shell
+clean-cache -n
+```
+
 <br />
 
 ## License
