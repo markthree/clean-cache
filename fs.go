@@ -28,7 +28,8 @@ func RemoveAll(f string) error {
 
 	signal := struct{}{}
 	errChan := make(chan error)
-	chs := make(chan struct{}, entrysLen)
+	signalChan := make(chan struct{}, entrysLen)
+	resolve, reject, status := StatusPromise(signalChan, errChan)
 
 	for i := 0; i < entrysLen; i++ {
 		go func(entry os.DirEntry) {
@@ -36,27 +37,25 @@ func RemoveAll(f string) error {
 			if !entry.IsDir() {
 				err := os.Remove(p)
 				if err != nil {
-					errChan <- err
+					reject(err)
 					return
 				}
-				chs <- signal
+				resolve(signal)
 				return
 			}
 			err := RemoveAll(p)
 			if err != nil {
-				errChan <- err
+				reject(err)
 				return
 			}
-			chs <- signal
+			resolve(signal)
 		}(entrys[i])
 	}
 
 	for i := 0; i < entrysLen; i++ {
-		select {
-		case <-chs:
-			continue
-		case nestedErr := <-errChan:
-			return nestedErr
+		_, err := status()
+		if err != nil {
+			return err
 		}
 	}
 	rootErr := os.Remove(f)
