@@ -51,28 +51,22 @@ func main() {
 
 	cacheDirsLen := len(cacheDirs)
 
-	errChan := make(chan error)
-	signalChan := make(chan struct{}, cacheDirsLen)
-	resolve, reject, status := StatusPromise(signalChan, errChan)
-
+	pass, _, wait := NoopPromise(cacheDirsLen)
 	for _, v := range cacheDirs {
 		go func(dir string) {
 			if !IsExist(dir) || !IsDir(dir) {
-				resolve(NoopSignal)
+				pass()
 				return
 			}
 			err := RemoveAll(dir)
 			if err != nil {
-				reject(err)
 				color.Red("remove fail: %v \nroot: %v", err, dir)
+				pass() // 错误时直接跳过即可，不需要 cry
 			} else {
-				resolve(NoopSignal)
 				color.Green("remove success: %v", dir)
+				pass()
 			}
 		}(v)
 	}
-
-	for i := 0; i < cacheDirsLen; i++ {
-		status()
-	}
+	wait()
 }

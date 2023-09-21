@@ -22,3 +22,25 @@ func StatusPromise[T any](ch chan T, err chan error) (func(T), func(error), func
 
 	return resolve, reject, status
 }
+
+func NoopPromise(length int) (func(), func(error), func() error) {
+	errChan := make(chan error)
+	signalChan := make(chan struct{}, length)
+	resolve, reject, status := StatusPromise(signalChan, errChan)
+	pass := func() {
+		resolve(NoopSignal)
+	}
+	cry := func(err error) {
+		reject(err)
+	}
+	wait := func() error {
+		for i := 0; i < length; i++ {
+			_, err := status()
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	return pass, cry, wait
+}

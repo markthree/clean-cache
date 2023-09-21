@@ -25,9 +25,7 @@ func RemoveAll(f string) error {
 	}
 
 	entrysLen := len(entrys)
-	errChan := make(chan error)
-	signalChan := make(chan struct{}, entrysLen)
-	resolve, reject, status := StatusPromise(signalChan, errChan)
+	pass, cry, wait := NoopPromise(entrysLen)
 
 	for i := 0; i < entrysLen; i++ {
 		go func(entry os.DirEntry) {
@@ -35,27 +33,26 @@ func RemoveAll(f string) error {
 			if !entry.IsDir() {
 				err := os.Remove(p)
 				if err != nil {
-					reject(err)
+					cry(err)
 					return
 				}
-				resolve(NoopSignal)
+				pass()
 				return
 			}
 			err := RemoveAll(p)
 			if err != nil {
-				reject(err)
+				cry(err)
 				return
 			}
-			resolve(NoopSignal)
+			pass()
 		}(entrys[i])
 	}
 
-	for i := 0; i < entrysLen; i++ {
-		_, err := status()
-		if err != nil {
-			return err
-		}
+	promiseErr := wait()
+	if promiseErr != nil {
+		return promiseErr
 	}
+
 	rootErr := os.Remove(f)
 	if rootErr != nil {
 		return rootErr
