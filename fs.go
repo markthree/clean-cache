@@ -25,8 +25,6 @@ func RemoveAll(f string) error {
 	}
 
 	entrysLen := len(entrys)
-
-	signal := struct{}{}
 	errChan := make(chan error)
 	signalChan := make(chan struct{}, entrysLen)
 	resolve, reject, status := StatusPromise(signalChan, errChan)
@@ -40,7 +38,7 @@ func RemoveAll(f string) error {
 					reject(err)
 					return
 				}
-				resolve(signal)
+				resolve(NoopSignal)
 				return
 			}
 			err := RemoveAll(p)
@@ -48,7 +46,7 @@ func RemoveAll(f string) error {
 				reject(err)
 				return
 			}
-			resolve(signal)
+			resolve(NoopSignal)
 		}(entrys[i])
 	}
 

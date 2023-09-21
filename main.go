@@ -43,21 +43,36 @@ func main() {
 		os.Exit(0)
 	}
 
-	cache_dirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
+	cacheDirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
 
-	withDist(&cache_dirs)
+	withDist(&cacheDirs)
 
-	withNodeModules(&cache_dirs)
+	withNodeModules(&cacheDirs)
 
-	for _, v := range cache_dirs {
-		if !IsExist(v) || !IsDir(v) {
-			continue
-		}
-		err := RemoveAll(v)
-		if err != nil {
-			color.Red("remove fail: %v \nroot: %v", err, v)
-		} else {
-			color.Green("remove success: %v", v)
-		}
+	cacheDirsLen := len(cacheDirs)
+
+	errChan := make(chan error)
+	signalChan := make(chan struct{}, cacheDirsLen)
+	resolve, reject, status := StatusPromise(signalChan, errChan)
+
+	for _, v := range cacheDirs {
+		go func(dir string) {
+			if !IsExist(dir) || !IsDir(dir) {
+				resolve(NoopSignal)
+				return
+			}
+			err := RemoveAll(dir)
+			if err != nil {
+				reject(err)
+				color.Red("remove fail: %v \nroot: %v", err, dir)
+			} else {
+				resolve(NoopSignal)
+				color.Green("remove success: %v", dir)
+			}
+		}(v)
+	}
+
+	for i := 0; i < cacheDirsLen; i++ {
+		status()
 	}
 }

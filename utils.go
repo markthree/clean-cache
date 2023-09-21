@@ -1,5 +1,7 @@
 package main
 
+var NoopSignal = struct{}{}
+
 func StatusPromise[T any](ch chan T, err chan error) (func(T), func(error), func() (T, error)) {
 	resolve := func(result T) {
 		ch <- result
