@@ -49,24 +49,15 @@ func main() {
 
 	withNodeModules(&cacheDirs)
 
-	cacheDirsLen := len(cacheDirs)
-
-	pass, _, wait := NoopPromise(cacheDirsLen)
-	for _, v := range cacheDirs {
-		go func(dir string) {
-			if !IsExist(dir) || !IsDir(dir) {
-				pass()
-				return
-			}
-			err := RemoveAll(dir)
-			if err != nil {
-				color.Red("remove fail: %v \nroot: %v", err, dir)
-				pass() // 错误时直接跳过即可，不需要 cry
-			} else {
-				color.Green("remove success: %v", dir)
-				pass()
-			}
-		}(v)
+	for _, dir := range cacheDirs {
+		if !IsExist(dir) || !IsDir(dir) {
+			continue
+		}
+		err := RemoveAll(dir)
+		if err != nil {
+			color.Red("remove fail: %v \nroot: %v", err, dir)
+		} else {
+			color.Green("remove success: %v", dir)
+		}
 	}
-	wait()
 }
