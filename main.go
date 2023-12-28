@@ -33,13 +33,13 @@ func withDist(dirs *[]string) {
 	}
 }
 
-func withAppend(dirs *[]string)  {
+func isRoot() bool {
 	for _, v := range os.Args {
 		if v == "-r" || v == "--root" {
-			*dirs = append(*dirs, "./")
-			return
+			return true
 		}
 	}
+	return false
 }
 
 func main() {
@@ -55,7 +55,16 @@ func main() {
 
 	cacheDirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
 
-	withAppend(&cacheDirs)
+	if isRoot() {
+		dir, _ := os.Getwd()
+		err := RemoveAll("./")
+		if err != nil {
+			color.Red("remove fail: %v \nroot: %v", err, dir)
+		} else {
+			color.Green("remove success: %v", dir)
+		}
+		return
+	}
 
 	withDist(&cacheDirs)
 
