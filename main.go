@@ -46,9 +46,9 @@ func main() {
 	if isHelp() {
 		fmt.Print("\n")
 		color.Cyan("clean-cache\n\n")
-		fmt.Print("       -r --root 删除根目录\n\n")
 		fmt.Print("Description: go 写的清理 node 项目缓存，超级无敌快\n\n")
-		fmt.Print("Usage: -d --dist 则会删除 dist 和 .output\n\n")
+		fmt.Print("Usage: -r --root 删除根目录\n\n")
+		fmt.Print("		  -d --dist 则会删除 dist 和 .output\n\n")
 		fmt.Print("       -n --node_modules 则会删除 node_modules\n\n")
 		os.Exit(0)
 	}
