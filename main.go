@@ -33,10 +33,20 @@ func withDist(dirs *[]string) {
 	}
 }
 
+func withAppend(dirs *[]string)  {
+	for _, v := range os.Args {
+		if v == "-r" || v == "--root" {
+			*dirs = append(*dirs, "./")
+			return
+		}
+	}
+}
+
 func main() {
 	if isHelp() {
 		fmt.Print("\n")
 		color.Cyan("clean-cache\n\n")
+		fmt.Print("       -r --root 删除根目录\n\n")
 		fmt.Print("Description: go 写的清理 node 项目缓存，超级无敌快\n\n")
 		fmt.Print("Usage: -d --dist 则会删除 dist 和 .output\n\n")
 		fmt.Print("       -n --node_modules 则会删除 node_modules\n\n")
@@ -44,6 +54,8 @@ func main() {
 	}
 
 	cacheDirs := []string{".nuxt", "cache", ".cache", "@cache", "temp", ".temp", "@temp"}
+
+	withAppend(&cacheDirs)
 
 	withDist(&cacheDirs)
 

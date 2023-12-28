@@ -51,6 +51,12 @@ clean-cache -n
 clean-cache -h
 ```
 
+#### 清除根目录
+
+```shell
+clean-cache -r
+```
+
 <br />
 
 ## License

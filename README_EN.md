@@ -51,6 +51,12 @@ clean-cache -n
 clean-cache -h
 ```
 
+#### clean root
+
+```shell
+clean-cache -r
+```
+
 <br />
 
 ## License
